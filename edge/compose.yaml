@@ -1,0 +1,28 @@
+services:
+  caddy:
+    image: caddy:alpine@sha256:f2a1290d0463aad60660d4ec134943f183ee2a5f6c3eb7bf32dd984f2f020772
+    restart: always
+    container_name: caddy
+    volumes:
+      - caddy_certs:/certs
+      - caddy_config:/config
+      - caddy_data:/data
+      - caddy_sites:/srv
+    network_mode: "host"
+    configs:
+      - source: Caddyfile
+        target: /etc/caddy/Caddyfile
+configs:
+  Caddyfile:
+    content: |
+      # Adjust cloud.example.com to your domain below
+      https://${DOMAIN_NAME}:443 {
+        tls internal
+        reverse_proxy localhost:11000
+      }
+
+volumes:
+  caddy_certs:
+  caddy_config:
+  caddy_data:
+  caddy_sites:
