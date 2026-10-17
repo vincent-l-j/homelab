@@ -46,6 +46,21 @@ services:
       - "${PIHOLE_UI_PORT:-5353}:80/tcp"
     restart: unless-stopped
 
+  ddns-updater:
+    image: ghcr.io/qdm12/ddns-updater
+    container_name: ddns-updater
+    network_mode: bridge
+    ports:
+      - 8000:8000/tcp
+    volumes:
+      - ./data:/updater/data
+    environment:
+      - TZ=Australia/Sydney
+      - PERIOD=5m
+      - LOG_LEVEL=info
+      - CONFIG='{"settings":[{"provider":"duckdns","domain":"sub.duckdns.org","token":"${DDNS_TOKEN}","ip_version":"ipv4"}]}'
+    restart: always
+
 networks:
   wg:
     driver: bridge
