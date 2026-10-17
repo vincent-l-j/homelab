@@ -1,3 +1,8 @@
+# source scripts/migrate_volume.sh
+# cd vpn/
+# migrate_volume vpn_etc_wireguard vpn etc_wireguard
+# migrate_volume vpn_etc_pihole vpn etc_pihole
+
 function migrate_volume() {
   EXISTING_VOLUME=$1
   PROJECT_NAME=$2
