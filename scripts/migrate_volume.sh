@@ -15,4 +15,5 @@ function migrate_volume() {
     --label com.docker.compose.project=$PROJECT_NAME \
     --label com.docker.compose.volume=$VOLUME_YAML
   docker run --rm -v $EXISTING_VOLUME:/dest -v "$(pwd)":/backup alpine sh -c "tar xvf /backup/volume_backup.tar -C /dest"
+  docker compose up -d
 }
