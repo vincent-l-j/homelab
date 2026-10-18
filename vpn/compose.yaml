@@ -55,10 +55,10 @@ services:
     volumes:
       - ./data:/updater/data
     environment:
-      - TZ=Australia/Sydney
+      - TZ="${TZ}"
       - PERIOD=5m
       - LOG_LEVEL=info
-      - CONFIG='{"settings":[{"provider":"duckdns","domain":"sub.duckdns.org","token":"${DDNS_TOKEN}","ip_version":"ipv4"}]}'
+      - CONFIG='{"settings":[{"provider":"duckdns","domain":"${DOMAIN_NAME}","token":"${DDNS_TOKEN}","ip_version":"ipv4"}]}'
     restart: always
 
 networks:
