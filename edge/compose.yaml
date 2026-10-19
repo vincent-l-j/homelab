@@ -15,10 +15,31 @@ services:
 configs:
   Caddyfile:
     content: |
-      # Adjust cloud.example.com to your domain below
-      https://${DOMAIN_NAME}:443 {
+      (private_ui) {
+        @outside not remote_ip private_ranges
+        respond @outside "Private network access only" 403
+      }
+
+      https://${DOMAIN_NAME:?Set DOMAIN_NAME in the root .env}:443 {
         tls internal
         reverse_proxy localhost:11000
+      }
+
+      https://pihole.${DOMAIN_NAME}:443 {
+        tls internal
+        route {
+          import private_ui
+          redir / /admin/ 302
+          reverse_proxy 127.0.0.1:${PIHOLE_UI_PORT:?Set PIHOLE_UI_PORT in the root .env}
+        }
+      }
+
+      https://wg.${DOMAIN_NAME}:443 {
+        tls internal
+        route {
+          import private_ui
+          reverse_proxy 127.0.0.1:${WG_UI_PORT:?Set WG_UI_PORT in the root .env}
+        }
       }
 
 volumes:

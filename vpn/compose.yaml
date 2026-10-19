@@ -18,7 +18,7 @@ services:
       - /lib/modules:/lib/modules:ro
     ports:
       - "51820:51820/udp"
-      - "51821:51821/tcp"
+      - "127.0.0.1:${WG_UI_PORT:?Set WG_UI_PORT in the root .env}:51821/tcp"
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -37,13 +37,16 @@ services:
       TZ: "${TZ}"
       FTLCONF_webserver_api_password: "${PIHOLE_PASSWORD:?Set PIHOLE_PASSWORD in .env}"
       FTLCONF_dns_listeningMode: "ALL"
+      FTLCONF_dns_hosts: "${HOST_IP:?Set HOST_IP in the root .env} ${DOMAIN_NAME:?Set DOMAIN_NAME in the root .env};${HOST_IP} pihole.${DOMAIN_NAME};${HOST_IP} wg.${DOMAIN_NAME}"
     networks:
       wg:
         ipv4_address: "${PIHOLE_IP}"
     volumes:
       - etc_pihole:/etc/pihole
     ports:
-      - "${PIHOLE_UI_PORT:-5353}:80/tcp"
+      - "${HOST_IP}:53:53/tcp"
+      - "${HOST_IP}:53:53/udp"
+      - "127.0.0.1:${PIHOLE_UI_PORT:?Set PIHOLE_UI_PORT in the root .env}:80/tcp"
     restart: unless-stopped
 
 networks:
